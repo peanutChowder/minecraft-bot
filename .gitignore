@@ -1,0 +1,6 @@
+.vscode/
+Lib/
+Include/
+Scripts/
+pyvenv.cfg
+tester.py
