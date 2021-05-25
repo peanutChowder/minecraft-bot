@@ -1,6 +1,7 @@
 import keyboard
 import pyautogui
 import time
+import threading
 
 class MinerBoy():     
 
@@ -14,10 +15,35 @@ class MinerBoy():
         for _ in range (4):
             pyautogui.move(-1000, 0)
 
-    def __init__(self):
+    def __init__(self, miningCylces):
         self.currentlyWalking = False
-        self.currentlyMining = False
-        self.escapeMiner = False
+        self.currentlyTunneling = False
+        self.escapeKey = "s"
+        self.cyclesRemaining = miningCylces
+        self.continueMining = True
+
+    def mine(self):
+        threading.Timer(1, self.checkEndMining).start()
+
+        while self.cyclesRemaining > 0 and self.continueMining:
+            self.toggleShiftWalk()
+            self.toggleTunnel()
+            time.sleep(10)
+            self.toggleShiftWalk()
+            self.toggleTunnel()
+            MinerBoy.autoTorch()
+            self.cyclesRemaining -= 1
+
+    def checkEndMining(self):
+        
+        while self.cyclesRemaining > 0:
+            print("checking.......")
+            if keyboard.is_pressed(self.escapeKey):
+                self.continueMining = False
+                print("Mining stopping at next cycle")
+                break
+            else:
+                time.sleep(2)
 
     def toggleShiftWalk(self):
         if self.currentlyWalking:
@@ -28,12 +54,12 @@ class MinerBoy():
             keyboard.press("w")
         self.currentlyWalking = not self.currentlyWalking
 
-    def toggleMine(self):
-        if self.currentlyMining:
+    def toggleTunnel(self):
+        if self.currentlyTunneling:
             pyautogui.mouseUp()
         else:
             pyautogui.mouseDown()
-        self.currentlyMining = not self.currentlyMining
+        self.currentlyTunneling = not self.currentlyTunneling
 
     def autoTorch():
         MinerBoy.turnRight()
@@ -45,25 +71,13 @@ class MinerBoy():
 def welcomeMsg():
     print("This is Jacob's simple python autominer. Press k to begin.")
 
-
-
 def main():
     welcomeMsg()
-    jacobMiner = MinerBoy()
+    jacobMiner = MinerBoy(3)
     keyboard.wait("k")
-    for _ in range(10):
-        if keyboard.is_pressed("s"):
-            break
-        jacobMiner.toggleShiftWalk()
-        jacobMiner.toggleMine()
-        time.sleep(10)
-        jacobMiner.toggleShiftWalk()
-        jacobMiner.toggleMine()
-        MinerBoy.autoTorch()
+    jacobMiner.mine()
     
-
-    # Delete below
-    print("done")
+    print("Program completed")
 
 main()
 
