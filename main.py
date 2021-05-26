@@ -7,13 +7,11 @@ class MinerBoy():
 
     @staticmethod
     def turnRight():
-        for _ in range (4):
-            pyautogui.move(1000, 0)
+        pyautogui.moveRel(350, 0, 0.5)
 
     @staticmethod
     def turnLeft():
-        for _ in range (4):
-            pyautogui.move(-1000, 0)
+        pyautogui.moveRel(-350, 0, 0.5)
 
     def __init__(self, miningCylces):
         self.currentlyWalking = False
@@ -43,7 +41,7 @@ class MinerBoy():
                 print("Mining stopping at next cycle")
                 break
             else:
-                time.sleep(2)
+                time.sleep(1)
 
     def toggleShiftWalk(self):
         if self.currentlyWalking:
