@@ -17,21 +17,26 @@ class OreRecognition():
         self.upper_blue = np.array((181, 245, 242))
 
     def oreSearch(self):
-        # temp. delete below.
-        keyboard.wait("k")
-
+        tempIter = 1
         with mss.mss() as sct:
-            while self.continueSearch:
+            # while self.continueSearch:
+            while tempIter > 0:
                 screenshot = np.array(sct.grab(self.monitor))
                 mask = self.colorFilter(screenshot)
-                x, y = self.getBestMatchLoc(mask)
+                x, y = OreRecognition.getBestMatchLoc(mask)
 
                 if x and y:
-                    pass
+                    OreRecognition.mineBlock(x, y)
 
-    def mineOre(x, y):
-        pyautogui.moveTo(x, y, 0.3)
-        pyautogui.click(duration=2)
+                # TODO: delete
+                tempIter -= 1
+
+    def mineBlock(x, y):
+        pyautogui.moveTo(x, y)
+        pyautogui.mouseDown()
+        sleep(1)
+        pyautogui.mouseUp()
+        # pyautogui.moveRel(350, 0, 0.5)
 
     def colorFilter(self, screenshot):
         hsv = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
@@ -44,3 +49,10 @@ class OreRecognition():
             return maxLocation
         else:
             return (0, 0)
+
+
+# TODO: delete
+print("waiting on input")
+keyboard.wait("k")
+oreBoy = OreRecognition()
+oreBoy.oreSearch()
